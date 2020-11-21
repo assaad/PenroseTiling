@@ -16,30 +16,41 @@ package helpers;/*
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import helpers.PTGen.RhombusOutput;
+import org.locationtech.jts.geom.Coordinate;
 import penrose.BoundingBox;
 import penrose.Rhombus;
-import org.locationtech.jts.geom.Coordinate;
 
 /**
  * This generates an SVG file with every rhombus represented as a separate path.
- *
+ * <p>
  * This can be used to generate penrose tilings for display.
  */
 class SvgOutput implements PTGen.RhombusOutput {
 
-    @Parameter(names={"--grid-spacing"}, description="How much space to leave between each " +
+    @Parameter(names = {"--grid-spacing"}, description = "How much space to leave between each " +
             "grid box.")
     protected double gridSpacing = 2.5;
 
-    @Parameter(names={"--show-grid"}, description="If true, add a border around each grid " +
+    @Parameter(names = {"--show-grid"}, description = "If true, add a border around each grid " +
             "denoting the bounding box for that grid. Note that this is not a \"strict\" " +
             "bounding box, in that some rhombii on the edge will pass beyond it.")
     protected boolean showGrid = false;
 
     protected BoundingBox currentBox = null;
 
-    @Override public void start(PTGen ptgen) {
+    static void usage() {
+        SvgOutput svgOutput = new SvgOutput();
+
+        JCommander parser = JCommander.newBuilder()
+                .addObject(svgOutput)
+                .programName("--type=SVG")
+                .build();
+
+        parser.usage();
+    }
+
+    @Override
+    public void start(PTGen ptgen) {
         // How far can a single rhombus stick out past the bounding box containing it.
         // This is half of the long axis of a thin rhombus.
         double maxProtrusion = Math.sin(Math.toRadians(72));
@@ -81,11 +92,13 @@ class SvgOutput implements PTGen.RhombusOutput {
         System.out.println("]]></style>");
     }
 
-    @Override public void startBox(BoundingBox boundingBox) {
+    @Override
+    public void startBox(BoundingBox boundingBox) {
         this.currentBox = boundingBox;
     }
 
-    @Override public void endBox(BoundingBox boundingBox) {
+    @Override
+    public void endBox(BoundingBox boundingBox) {
         if (showGrid) {
             System.out.println(
                     String.format("<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" " +
@@ -96,8 +109,9 @@ class SvgOutput implements PTGen.RhombusOutput {
         }
     }
 
-    @Override public void visitRhombus(Rhombus rhombus) {
-        assert(currentBox != null);
+    @Override
+    public void visitRhombus(Rhombus rhombus) {
+        assert (currentBox != null);
 
         System.out.print("<path");//);
 
@@ -113,7 +127,7 @@ class SvgOutput implements PTGen.RhombusOutput {
 
         System.out.print(" d=\"M");
 
-        for (Coordinate vertex: rhombus.getVertices()) {
+        for (Coordinate vertex : rhombus.getVertices()) {
             System.out.print(String.format(" %f,%f",
                     vertex.x + currentBox.xMultiple * gridSpacing,
                     vertex.y + currentBox.yMultiple * gridSpacing));
@@ -124,18 +138,8 @@ class SvgOutput implements PTGen.RhombusOutput {
                 rhombus.getUpperStrip()));
     }
 
-    @Override public void end() {
+    @Override
+    public void end() {
         System.out.println("</svg>");
-    }
-
-    static void usage() {
-        SvgOutput svgOutput = new SvgOutput();
-
-        JCommander parser = JCommander.newBuilder()
-                .addObject(svgOutput)
-                .programName("--type=SVG")
-                .build();
-
-        parser.usage();
     }
 }

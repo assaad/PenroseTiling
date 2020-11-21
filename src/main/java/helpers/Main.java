@@ -2,50 +2,43 @@ package helpers;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import helpers.PTGen.RhombusOutput;
 
 import static helpers.OutputType.SVG;
 import static helpers.OutputType.SVGLINE;
 
 public class Main {
 
-    @Parameter(names={"--minX", "-x"}, description="The minimum x value in pentagrid space of " +
+    @Parameter(names = {"--minX", "-x"}, description = "The minimum x value in pentagrid space of " +
             "the tiling to generate.")
-    private Double minX = 0.0;
+    private final Double minX = 0.0;
 
-    @Parameter(names={"--minY", "-y"}, description="The minimum y value in pentagrid space of " +
+    @Parameter(names = {"--minY", "-y"}, description = "The minimum y value in pentagrid space of " +
             "the tiling to generate.")
-    private Double minY = 0.0;
+    private final Double minY = 0.0;
 
-    @Parameter(names={"--width", "-w"}, description="The width of each grid square.")
-    private Double width = 10.0;
+    @Parameter(names = {"--width", "-w"}, description = "The width of each grid square.")
+    private final Double width = 10.0;
 
-    @Parameter(names={"--height", "-h"}, description="The height of each grid square.")
-    private Double height = 10.0;
+    @Parameter(names = {"--height", "-h"}, description = "The height of each grid square.")
+    private final Double height = 10.0;
 
-    @Parameter(names={"--countX", "-cx"}, description="The number of grids to generate, in the " +
+    @Parameter(names = {"--countX", "-cx"}, description = "The number of grids to generate, in the " +
             "x axis.")
-    private Integer countX = 1;
+    private final Integer countX = 1;
 
-    @Parameter(names={"--countY", "-cy"}, description="The number of grids to generate, in the " +
+    @Parameter(names = {"--countY", "-cy"}, description = "The number of grids to generate, in the " +
             "y axis.")
-    private Integer countY = 1;
+    private final Integer countY = 1;
 
-    @Parameter(names={"--type", "-t"}, converter = OutputType.Converter.class,
-            description="Which type of output to generate.")
-    private OutputType type = SVG;
+    @Parameter(names = {"--type", "-t"}, converter = OutputType.Converter.class,
+            description = "Which type of output to generate.")
+    private final OutputType type = SVG;
 
-    @Parameter(names={"--seed", "-s"}, description="The random seed used to generate the tiling.")
-    private long seed = 0;
+    @Parameter(names = {"--seed", "-s"}, description = "The random seed used to generate the tiling.")
+    private final long seed = 0;
 
-    @Parameter(names={"--help", "-?"}, help=true, description="Show this usage info.")
-    private boolean help = false;
-
-    public void doMain(PTGen.RhombusOutput output) {
-        PTGen ptGen = new PTGen(seed, minX, minY, width, height, countX, countY);
-        
-        ptGen.visitRhombii(output);
-    }
+    @Parameter(names = {"--help", "-?"}, help = true, description = "Show this usage info.")
+    private final boolean help = false;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -101,5 +94,11 @@ public class Main {
         SvgOutput.usage();
 
         SvgLineOutput.usage();
+    }
+
+    public void doMain(PTGen.RhombusOutput output) {
+        PTGen ptGen = new PTGen(seed, minX, minY, width, height, countX, countY);
+
+        ptGen.visitRhombii(output);
     }
 }

@@ -14,11 +14,11 @@ package helpers;/*
  * limitations under the License.
  */
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.math.Vector2D;
 import penrose.BoundingBox;
 import penrose.PenroseTiling;
 import penrose.PenroseTiling.RhombusVisitor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.math.Vector2D;
 
 import java.util.Random;
 
@@ -26,21 +26,21 @@ import java.util.Random;
  * helpers.PTGen = Penrose-Tiling-Generator
  */
 public class PTGen {
-    private final long seed;
     public final double minX;
     public final double minY;
     public final double width;
     public final double height;
     public final int countX;
     public final int countY;
+    private final long seed;
 
     /**
      * Construct a tiling generator.
      *
-     * @param seed The random seed used to generate the tiling.
-     * @param minX The minimum x coordinate of the pentagrid space to include in the tiling.
-     * @param minY The minimum x coordinate of the pentagrid space to include in the tiling.
-     * @param width The width of a single grid box, in pentagrid space coordinates.
+     * @param seed   The random seed used to generate the tiling.
+     * @param minX   The minimum x coordinate of the pentagrid space to include in the tiling.
+     * @param minY   The minimum x coordinate of the pentagrid space to include in the tiling.
+     * @param width  The width of a single grid box, in pentagrid space coordinates.
      * @param height The height of a single grid box, in pentagrid space coordinates.
      * @param countX How many grid boxes to include in the x dimension.
      * @param countY How many grid boxes to include in the y dimension.
@@ -54,33 +54,6 @@ public class PTGen {
         this.height = height;
         this.countX = countX;
         this.countY = countY;
-    }
-
-    /**
-     * An interface for receiving callbacks about the generated tiling.
-     */
-    public interface RhombusOutput extends RhombusVisitor {
-        /**
-         * Called once at the beginning of tiling generation.
-         */
-        void start(PTGen ptgen);
-
-        /**
-         * Called once at the start of every grid box that is generated.
-         * @param boundingBox The bounding box being visited.
-         */
-        void startBox(BoundingBox boundingBox);
-
-        /**
-         * Called once at the end of every grid box that is generated.
-         * @param boundingBox The bounding box being left.
-         */
-        void endBox(BoundingBox boundingBox);
-
-        /**
-         * Called once at the end of tiling generation.
-         */
-        void end();
     }
 
     /**
@@ -108,6 +81,35 @@ public class PTGen {
         }
 
         visitor.end();
+    }
+
+    /**
+     * An interface for receiving callbacks about the generated tiling.
+     */
+    public interface RhombusOutput extends RhombusVisitor {
+        /**
+         * Called once at the beginning of tiling generation.
+         */
+        void start(PTGen ptgen);
+
+        /**
+         * Called once at the start of every grid box that is generated.
+         *
+         * @param boundingBox The bounding box being visited.
+         */
+        void startBox(BoundingBox boundingBox);
+
+        /**
+         * Called once at the end of every grid box that is generated.
+         *
+         * @param boundingBox The bounding box being left.
+         */
+        void endBox(BoundingBox boundingBox);
+
+        /**
+         * Called once at the end of tiling generation.
+         */
+        void end();
     }
 
 }

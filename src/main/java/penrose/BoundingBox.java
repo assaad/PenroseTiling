@@ -40,9 +40,9 @@ public class BoundingBox implements Comparable<BoundingBox> {
      * box in the grid.
      *
      * @param gridOrigin The lower left point of the (0, 0) box of this grid.
-     * @param gridSize A vector representing the x and y size of each grid box
-     * @param xMultiple Create a bounding box for the box at this x multiple.
-     * @param yMultiple Create a bounding box for the box at this y multiple.
+     * @param gridSize   A vector representing the x and y size of each grid box
+     * @param xMultiple  Create a bounding box for the box at this x multiple.
+     * @param yMultiple  Create a bounding box for the box at this y multiple.
      */
     public BoundingBox(Coordinate gridOrigin, Vector2D gridSize, int xMultiple, int yMultiple) {
         this.gridOrigin = gridOrigin;
@@ -55,7 +55,7 @@ public class BoundingBox implements Comparable<BoundingBox> {
 
         this.extent = new Vector2D(origin).add(gridSize).toCoordinate();
 
-        polygon = PenroseTiling.GEOMETRY_FACTORY.createPolygon(new Coordinate[] {
+        polygon = PenroseTiling.GEOMETRY_FACTORY.createPolygon(new Coordinate[]{
                 origin,
                 new Coordinate(origin.x, extent.y),
                 new Coordinate(extent.x, extent.y),
@@ -64,21 +64,22 @@ public class BoundingBox implements Comparable<BoundingBox> {
         });
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BoundingBox that = (BoundingBox)o;
+        BoundingBox that = (BoundingBox) o;
 
         if (xMultiple != that.xMultiple) return false;
         if (yMultiple != that.yMultiple) return false;
 
         if (!gridOrigin.equals(that.gridOrigin)) return false;
-        if (!gridSize.equals(that.gridSize)) return false;
-        return true;
+        return gridSize.equals(that.gridSize);
     }
 
-    @Override public int compareTo(BoundingBox o) {
+    @Override
+    public int compareTo(BoundingBox o) {
         int comparison = Double.compare(origin.x, o.origin.x);
         if (comparison != 0) {
             return comparison;
@@ -86,7 +87,8 @@ public class BoundingBox implements Comparable<BoundingBox> {
         return Double.compare(origin.y, o.origin.y);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = gridOrigin.hashCode();
         result = 31 * result + gridSize.hashCode();
         result = 31 * result + xMultiple;

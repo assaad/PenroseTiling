@@ -23,7 +23,8 @@ public enum OutputType {
     SVGLINE;
 
     public static class Converter implements IStringConverter<OutputType> {
-        @Override public OutputType convert(String value) {
+        @Override
+        public OutputType convert(String value) {
             value = value.toUpperCase();
             if ("SVG".equals(value)) {
                 return SVG;

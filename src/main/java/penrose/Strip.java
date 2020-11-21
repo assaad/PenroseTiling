@@ -72,15 +72,15 @@ public class Strip {
 
             if (forward) {
                 if (interval < 0) {
-                    intersectionMultiples[i] = (int)-Math.ceil(delta / interval);
+                    intersectionMultiples[i] = (int) -Math.ceil(delta / interval);
                 } else {
-                    intersectionMultiples[i] = (int)-Math.floor(delta / interval);
+                    intersectionMultiples[i] = (int) -Math.floor(delta / interval);
                 }
             } else {
                 if (interval < 0) {
-                    intersectionMultiples[i] = (int)-Math.floor(delta / interval);
+                    intersectionMultiples[i] = (int) -Math.floor(delta / interval);
                 } else {
-                    intersectionMultiples[i] = (int)-Math.ceil(delta/ interval);
+                    intersectionMultiples[i] = (int) -Math.ceil(delta / interval);
                 }
             }
 
@@ -88,21 +88,25 @@ public class Strip {
         }
 
         return new Iterable<Rhombus>() {
-            @Override @Nonnull public Iterator<Rhombus> iterator() {
+            @Override
+            @Nonnull
+            public Iterator<Rhombus> iterator() {
                 return new Iterator<Rhombus>() {
-                    public double[] inter = intersections;
-                    public int[] interMultiples = intersectionMultiples;
+                    public final double[] inter = intersections;
+                    public final int[] interMultiples = intersectionMultiples;
 
-                    @Override public boolean hasNext() {
+                    @Override
+                    public boolean hasNext() {
                         return true;
                     }
 
-                    @Override public Rhombus next() {
+                    @Override
+                    public Rhombus next() {
                         int closest = -1;
                         double closestValue =
                                 forward ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
 
-                        for (int i=0; i<5; i++) {
+                        for (int i = 0; i < 5; i++) {
                             if (i == stripFamily.angle) {
                                 interMultiples[i] = multiple;
                                 continue;
@@ -151,7 +155,8 @@ public class Strip {
                                         .getStrip(multiple), latticeCoords);
                     }
 
-                    @Override public void remove() {
+                    @Override
+                    public void remove() {
                         throw new UnsupportedOperationException();
                     }
                 };
@@ -185,6 +190,7 @@ public class Strip {
 
     /**
      * Gets the coordinate of the intersection between this strip and the given strip.
+     *
      * @return the coordinate of the intersection between this strip and the given strip, or null
      * if the strips are parallel.
      */
@@ -212,23 +218,26 @@ public class Strip {
                 (vector1.length() / vector2.length());
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Strip strip = (Strip)o;
+        Strip strip = (Strip) o;
 
         if (multiple != strip.multiple) return false;
         return stripFamily.equals(strip.stripFamily);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = stripFamily.hashCode();
         result = 31 * result + multiple;
         return result;
     }
 
-    @Override public String toString() {
-        return "Strip(" + stripFamily.angle +":" + multiple + ")";
+    @Override
+    public String toString() {
+        return "Strip(" + stripFamily.angle + ":" + multiple + ")";
     }
 }

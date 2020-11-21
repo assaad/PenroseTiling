@@ -16,54 +16,36 @@ package helpers;/*
 
 
 import com.beust.jcommander.JCommander;
+import org.locationtech.jts.geom.Coordinate;
 import penrose.BoundingBox;
 import penrose.Rhombus;
-import org.locationtech.jts.geom.Coordinate;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * This generates an SVG file that only contains the rhombus edges as lines.
- *
+ * <p>
  * The shared edges between 2 rhombii are deduplicated, which is useful when engraving on a CNC
  * mill, etc. to avoid re-engraving/cutting/whatever the same line twice.
  */
 public class SvgLineOutput extends SvgOutput {
 
-    private class Edge {
-        public Coordinate first;
-        public Coordinate second;
+    private final Set<Edge> currentBoxEdges = new HashSet<Edge>();
 
-        public Edge(Coordinate first, Coordinate second) {
-            this.first = first;
-            this.second = second;
-        }
+    static void usage() {
+        SvgLineOutput svgLineOutput = new SvgLineOutput();
 
-        @Override public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        JCommander parser = JCommander.newBuilder()
+                .addObject(svgLineOutput)
+                .programName("--type=SVGLINE")
+                .build();
 
-            Edge edge = (Edge)o;
-
-            if (!first.equals(edge.first)) return false;
-            return second.equals(edge.second);
-        }
-
-        @Override public int hashCode() {
-            int result = first.hashCode();
-            result = 31 * result + second.hashCode();
-            return result;
-        }
-
-        public Edge reversed() {
-            return new Edge(second, first);
-        }
+        parser.usage();
     }
 
-    private Set<Edge> currentBoxEdges = new HashSet<Edge>();
-
-    @Override protected void generateStyle() {
+    @Override
+    protected void generateStyle() {
         System.out.println("<style><![CDATA[");
         System.out.println("rect.boundingBox {");
         System.out.println("    stroke: blue;");
@@ -78,15 +60,17 @@ public class SvgLineOutput extends SvgOutput {
         System.out.println("]]></style>");
     }
 
-    @Override public void startBox(BoundingBox boundingBox) {
+    @Override
+    public void startBox(BoundingBox boundingBox) {
         super.startBox(boundingBox);
         currentBoxEdges.clear();
     }
 
-    @Override public void visitRhombus(Rhombus rhombus) {
+    @Override
+    public void visitRhombus(Rhombus rhombus) {
         Coordinate[] vertices = rhombus.getVertices();
         Coordinate previousVertex = vertices[vertices.length - 1];
-        for (Coordinate vertex: vertices) {
+        for (Coordinate vertex : vertices) {
             Edge edge = new Edge(previousVertex, vertex);
 
             if (currentBoxEdges.contains(edge) || currentBoxEdges.contains(edge.reversed())) {
@@ -111,14 +95,35 @@ public class SvgLineOutput extends SvgOutput {
         }
     }
 
-    static void usage() {
-        SvgLineOutput svgLineOutput = new SvgLineOutput();
+    private class Edge {
+        public Coordinate first;
+        public Coordinate second;
 
-        JCommander parser = JCommander.newBuilder()
-                .addObject(svgLineOutput)
-                .programName("--type=SVGLINE")
-                .build();
+        public Edge(Coordinate first, Coordinate second) {
+            this.first = first;
+            this.second = second;
+        }
 
-        parser.usage();
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Edge edge = (Edge) o;
+
+            if (!first.equals(edge.first)) return false;
+            return second.equals(edge.second);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = first.hashCode();
+            result = 31 * result + second.hashCode();
+            return result;
+        }
+
+        public Edge reversed() {
+            return new Edge(second, first);
+        }
     }
 }

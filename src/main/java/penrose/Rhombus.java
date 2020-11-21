@@ -30,12 +30,16 @@ public class Rhombus {
 
     public static final int THIN = 0;
     public static final int THICK = 1;
-
+    // This order produces the list of vertices in order around the rhombus
+    private static final int[][] offsets = new int[][]{
+            {0, 0},
+            {0, -1},
+            {-1, -1},
+            {-1, 0}
+    };
     public final Strip strip1;
     public final Strip strip2;
-
     public final int[] latticeCoords;
-
     public final Polygon polygon;
 
     public Rhombus(Strip strip1, Strip strip2, int[] latticeCoords) {
@@ -62,14 +66,6 @@ public class Rhombus {
         }
     }
 
-    // This order produces the list of vertices in order around the rhombus
-    private static int[][] offsets = new int[][]{
-            {0, 0},
-            {0, -1},
-            {-1, -1},
-            {-1, 0}
-    };
-
     /**
      * Given a particular grid configuration, gets the bounding box in that grid that contains
      * this rhombus.
@@ -85,8 +81,8 @@ public class Rhombus {
         for (Coordinate vertex : getVertices()) {
             Coordinate normalized =
                     new Vector2D(vertex).subtract(new Vector2D(gridStart)).toCoordinate();
-            possibleXs.add((int)Math.floor(normalized.x / gridSize.getX()));
-            possibleYs.add((int)Math.floor(normalized.y / gridSize.getY()));
+            possibleXs.add((int) Math.floor(normalized.x / gridSize.getX()));
+            possibleYs.add((int) Math.floor(normalized.y / gridSize.getY()));
         }
 
         BoundingBox maxBoundingBox = null;
@@ -146,11 +142,12 @@ public class Rhombus {
         return coordinate;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Rhombus rhombus = (Rhombus)o;
+        Rhombus rhombus = (Rhombus) o;
 
         if (!getLowerStrip().equals(rhombus.getLowerStrip())) return false;
         return getUpperStrip().equals(rhombus.getUpperStrip());
@@ -176,12 +173,14 @@ public class Rhombus {
         return strip1;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = getLowerStrip().hashCode();
         return 31 * result + getUpperStrip().hashCode();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Rhombus(" + strip1 + ", " + strip2 + ")";
     }
 }

@@ -23,20 +23,18 @@ import org.locationtech.jts.math.Vector2D;
  */
 public class PentAngle {
 
-    private final int angleIndex;
-    private final int degrees;
-    private final double radians;
-
-    public final double sin;
-    public final double cos;
-
-    public static PentAngle[] PENTANGLES = new PentAngle[] {
+    public static PentAngle[] PENTANGLES = new PentAngle[]{
             new PentAngle(0), // 0, 1
             new PentAngle(1), //
             new PentAngle(2),
             new PentAngle(3),
             new PentAngle(4)
     };
+    public final double sin;
+    public final double cos;
+    private final int angleIndex;
+    private final int degrees;
+    private final double radians;
 
     private PentAngle(int angleIndex) {
         this.angleIndex = angleIndex;
